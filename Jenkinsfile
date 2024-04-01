@@ -1,56 +1,35 @@
 pipeline {
+
     agent any
-
-    environment {
-        // Define environment variables if needed
-    }
-
+    
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/Mati-Shaikh/Jenkins_Lab'
+         stage('install') {
+          steps {
+              sh 'npm install'
             }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                script {
-                    dir('app') {
-                        sh 'npm install'
-                    }
-                }
+          }
+          stage('start') {
+          steps {
+              sh 'npm start'
             }
-        }
-
-        stage('Build') {
-            steps {
-                script {
-                    dir('app') {
-                        sh 'npm run build'
-                    }
-                }
+          }
+        
+        stage('test') {
+          steps {
+              sh 'npm test'
             }
-        }
-
-        stage('Test') {
-            steps {
-                script {
-                    dir('app') {
-                        // Replace with actual test command
-                        sh 'npm test'
-                    }
-                }
+          }
+          stage('Docker Image') {
+          steps {
+              sh 'docker build -t SCDLABTASK'
             }
-        }
-
-        stage('Dockerize and Deploy') {
+          }
+        
+        stage('Docker Comopse Up') {
             steps {
-                script {
-                    // Assuming the Dockerfile is at the root or specify the path
-                    sh 'docker build -t express-mongodb-app .'
-                    // Assuming docker-compose.yml is properly set up in the project root
-                    sh 'docker-compose up -d'
-                }
+               
+                    sh "docker compose up"
+                
             }
         }
     }
